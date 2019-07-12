@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react'
+import React, { useState, useEffect, useReducer, useMemo } from 'react'
 import axios from 'axios'
 import List from './List'
 
@@ -119,7 +119,12 @@ const HooksList = props => {
             <button type="button" onClick={hookListHandler}>
                 Add to Hooks List
             </button>
-            <List items={hookInputsList} onClick={removeHookHandler} />
+            {useMemo(
+                () => (
+                    <List items={hookInputsList} onClick={removeHookHandler} />
+                ),
+                [hookInputsList]
+            )}
 
             {/* replaced by list.js and the useMemo hook 
                  adds performance boost because only reloads the DOM element on full change */}
@@ -150,12 +155,12 @@ const HooksList = props => {
         --COMMON HOOKS--
 
         useState()
-        * Use case: storing data internally for manipulation
+        * use case: storing data internally for manipulation
         * takes a list of 2 arguments and can be set (and initialized) to anything (string, array, obj): [hookState, updateHookState] = useState([])
         * running " updateHookState('new state that you want to update to') " will update the state of 'hookState'
     
         useEffect()
-        * Use case: do something on rerender or value change
+        * use case: do something on rerender or value change
         * takes 2 inputs: first is what you want to happen, second is a list of vals that, if changed, UseEffect will run
         * if second is left blank useEffect will be run once per render cycle
         * if second is [] then useEffect will only run once upon mount
@@ -179,6 +184,14 @@ const HooksList = props => {
             *1  'type' which is the operaton being performed  exe. ADD, REMOVE, SET etc.
             *2  'payload' which is whatever object you're performing the operation on
         * preserves state internally
+         
+        useMemo()
+        * use case: caching information to run logic only on value change
+        * takes 2 inputs:
+            *1 a function or logic to be returned  
+            *2 the value change to cause that
+        * good for conditionally doing something
+        * can improve performance
 
     */
 }
