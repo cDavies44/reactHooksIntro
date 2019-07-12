@@ -150,10 +150,12 @@ const HooksList = props => {
         --COMMON HOOKS--
 
         useState()
+        * Use case: storing data internally for manipulation
         * takes a list of 2 arguments and can be set (and initialized) to anything (string, array, obj): [hookState, updateHookState] = useState([])
         * running " updateHookState('new state that you want to update to') " will update the state of 'hookState'
     
         useEffect()
+        * Use case: do something on rerender or value change
         * takes 2 inputs: first is what you want to happen, second is a list of vals that, if changed, UseEffect will run
         * if second is left blank useEffect will be run once per render cycle
         * if second is [] then useEffect will only run once upon mount
@@ -167,9 +169,11 @@ const HooksList = props => {
         --LESS COMMON HOOKS--
 
         useContext()
+        * use case: setting context externally 
         * returns the current context value of a preset context
 
         useReducer()
+        * use case: preserving and running actions on state internally 
         * data operations and handling
         * takes 2 inputs
             *1  'type' which is the operaton being performed  exe. ADD, REMOVE, SET etc.
