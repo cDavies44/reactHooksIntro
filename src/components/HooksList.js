@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useReducer } from 'react'
 import axios from 'axios'
-import List from 'List'
+import List from './List'
 
 const HooksList = props => {
     // USE STATE
@@ -32,7 +32,6 @@ const HooksList = props => {
                 'https://react-hooks-tutorial-excella.firebaseio.com/usestate.json'
             )
             .then(res => {
-                console.log(res)
                 const hookData = res.data
                 const hooks = []
                 for (const key in hookData) {
@@ -62,7 +61,11 @@ const HooksList = props => {
 
     const hookInputHandler = event => {
         updateHookInput(event.target.value)
-        // if 
+        if (event.target.value.trim() === '') {
+            if (isValidInput !== false) updateValidity(false)
+        } else {
+            if (isValidInput !== true) updateValidity(true)
+        }
     }
 
     const removeHookHandler = id => {
@@ -81,7 +84,7 @@ const HooksList = props => {
                 { name: hookInput }
             )
             .then(res => {
-                console.log(res)
+                //console.log('res ' + res.name)
                 // use state replaces with us reducer
                 // updateHookInputsList(
                 //     hookInputsList.concat({
@@ -91,7 +94,11 @@ const HooksList = props => {
                 // )
 
                 // use reducer
-                dispatch({ type: 'ADD', payload: res })
+
+                dispatch({
+                    type: 'ADD',
+                    payload: { id: res.data.name, name: hookInput },
+                })
 
                 updateHookInput('')
             })
@@ -105,11 +112,14 @@ const HooksList = props => {
                 placeholder="hook"
                 value={hookInput}
                 onChange={hookInputHandler}
+                style={{
+                    border: isValidInput ? '1px solid grey' : '1px solid red',
+                }}
             />
             <button type="button" onClick={hookListHandler}>
                 Add to Hooks List
             </button>
-            <List items={hookInputsList} onClick={removeHookHandler}></List>
+            <List items={hookInputsList} onClick={removeHookHandler} />
 
             {/* replaced by list.js and the useMemo hook 
                  adds performance boost because only reloads the DOM element on full change */}
@@ -123,7 +133,6 @@ const HooksList = props => {
                     </li>
                 ))}
             </ul> */}
-
         </React.Fragment>
     )
 
