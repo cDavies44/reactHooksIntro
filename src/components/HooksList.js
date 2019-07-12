@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useReducer, useMemo } from 'react'
 import axios from 'axios'
 import List from './List'
+import { useFormInput } from '../hooks/formInputs'
 
 const HooksList = props => {
-    // USE STATE
-    const [hookInput, updateHookInput] = useState('')
-    const [isValidInput, updateValidity] = useState(false)
+    // USE STATE --> Moved to self created hook in formInputs.js
+    // const [hookInput, updateHookInput] = useState('')
+    // const [isValidInput, updateValidity] = useState(false)
+    const hookInput = useFormInput()
+
     //use state replaced with use reducer
     //const [hookInputsList, updateHookInputsList] = useState([])
 
@@ -40,6 +43,7 @@ const HooksList = props => {
                         name: hookData[key].name,
                     })
                 }
+                console.log(hooks)
                 // use reducer
                 dispatch({ type: 'SET', payload: hooks })
             })
@@ -59,14 +63,14 @@ const HooksList = props => {
         //console.log(event.clientX, event.clientY);
     }
 
-    const hookInputHandler = event => {
-        updateHookInput(event.target.value)
-        if (event.target.value.trim() === '') {
-            if (isValidInput !== false) updateValidity(false)
-        } else {
-            if (isValidInput !== true) updateValidity(true)
-        }
-    }
+    // const hookInputHandler = event => {
+    //     updateHookInput(event.target.value)
+    //     if (event.target.value.trim() === '') {
+    //         if (isValidInput !== false) updateValidity(false)
+    //     } else {
+    //         if (isValidInput !== true) updateValidity(true)
+    //     }
+    // }
 
     const removeHookHandler = id => {
         axios
@@ -81,7 +85,7 @@ const HooksList = props => {
         axios
             .post(
                 'https://react-hooks-tutorial-excella.firebaseio.com/usestate.json',
-                { name: hookInput }
+                { name: hookInput.value }
             )
             .then(res => {
                 //console.log('res ' + res.name)
@@ -97,10 +101,13 @@ const HooksList = props => {
 
                 dispatch({
                     type: 'ADD',
-                    payload: { id: res.data.name, name: hookInput },
+                    payload: { id: res.data.name, name: hookInput.value },
                 })
 
-                updateHookInput('')
+                //moves to valueRest function in formInputs
+                // updateHookInput('')
+
+                hookInput.valueReset()
             })
             .catch(err => console.log(err))
     }
@@ -110,10 +117,12 @@ const HooksList = props => {
             <input
                 type="text"
                 placeholder="hook"
-                value={hookInput}
-                onChange={hookInputHandler}
+                value={hookInput.value}
+                onChange={hookInput.onChange}
                 style={{
-                    border: isValidInput ? '1px solid grey' : '1px solid red',
+                    border: hookInput.isValidInput
+                        ? '1px solid grey'
+                        : '1px solid red',
                 }}
             />
             <button type="button" onClick={hookListHandler}>
@@ -193,6 +202,12 @@ const HooksList = props => {
         * good for conditionally doing something
         * can improve performance
 
+
+        --CUSTOM HOOKS--
+        * created in and imported from the hooks folder
+        * values are set, functions are made, and only accessed from outside of the function if returned
+        * basically like making a new class
+        * see ../hooks/formInputs
     */
 }
 
